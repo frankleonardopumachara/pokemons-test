@@ -1,0 +1,49 @@
+<div class="grid pokemon-page">
+
+  <div class="col">
+    <p-autoComplete
+      [formControl]="searchFC"
+      [suggestions]="suggestions"
+      class="mb-1"
+    ></p-autoComplete>
+    <p-table
+      [value]="pokemons"
+      selectionMode="single"
+      [(selection)]="selected"
+      [rows]="pagination.rows"
+      [first]="pagination.first"
+      [totalRecords]="pagination.totalRecords"
+      [paginator]="true"
+      [rowsPerPageOptions]="pagination.rowsPerPageOptions"
+      [responsive]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Image</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pokemon>
+        <tr>
+          <td>{{ pokemon.name }}</td>
+          <td>
+            <p-button
+              [label]="pokemon.url"
+              styleClass="p-button-link"
+            >
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="col-3">
+    <div class="bg-red-500"
+         *ngIf="selected"
+    >
+      <h1>Hello</h1>
+    </div>
+  </div>
+  <button (click)="toggleDetail()">cick</button>
+</div>

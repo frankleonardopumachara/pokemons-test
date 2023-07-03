@@ -1,7 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core'
-import { FormControl } from '@angular/forms'
-import { PokemonPagePresenter } from './pokemon-page.presenter'
-import { PokemonItem } from '../../domain/symbols'
+import {Component, inject, OnInit} from '@angular/core'
+import {FormControl} from '@angular/forms'
+import {PokemonPagePresenter} from './pokemon-page.presenter'
 
 @Component({
   selector: 'app-pokemon-page',
@@ -15,81 +14,100 @@ export class PokemonPageComponent implements OnInit {
 
   searchFC = new FormControl('')
   suggestions = ['Frank', 'Leonardo']
-  pokemonsI: PokemonItem[] = [
+  pokemonsI: any[] = [
     {
-      'name': 'fearow',
-      'url': 'https://pokeapi.co/api/v2/pokemon/22/'
+      id: 1,
+      name: 'fearow',
+      url: 'https://pokeapi.co/api/v2/pokemon/22/'
     },
     {
-      'name': 'ekans',
+      id: 2,
+      name: 'ekans',
       'url': 'https://pokeapi.co/api/v2/pokemon/23/'
     },
     {
-      'name': 'arbok',
+      id: 3,
+      name: 'arbok',
       'url': 'https://pokeapi.co/api/v2/pokemon/24/'
     },
     {
-      'name': 'pikachu',
+      id: 4,
+      name: 'pikachu',
       'url': 'https://pokeapi.co/api/v2/pokemon/25/'
     },
     {
-      'name': 'raichu',
+      id: 5,
+      name: 'raichu',
       'url': 'https://pokeapi.co/api/v2/pokemon/26/'
     },
     {
-      'name': 'sandshrew',
+      id: 6,
+      name: 'sandshrew',
       'url': 'https://pokeapi.co/api/v2/pokemon/27/'
     },
     {
-      'name': 'sandslash',
+      id: 7,
+      name: 'sandslash',
       'url': 'https://pokeapi.co/api/v2/pokemon/28/'
     },
     {
-      'name': 'nidoran-f',
+      id: 8,
+      name: 'nidoran-f',
       'url': 'https://pokeapi.co/api/v2/pokemon/29/'
     },
     {
-      'name': 'nidorina',
+      id: 9,
+      name: 'nidorina',
       'url': 'https://pokeapi.co/api/v2/pokemon/30/'
     },
     {
-      'name': 'nidoqueen',
+      id: 10,
+      name: 'nidoqueen',
       'url': 'https://pokeapi.co/api/v2/pokemon/31/'
     },
     {
-      'name': 'nidoran-m',
+      id: 11,
+      name: 'nidoran-m',
       'url': 'https://pokeapi.co/api/v2/pokemon/32/'
     },
     {
-      'name': 'nidorino',
+      id: 12,
+      name: 'nidorino',
       'url': 'https://pokeapi.co/api/v2/pokemon/33/'
     },
     {
-      'name': 'nidoking',
+      id: 13,
+      name: 'nidoking',
       'url': 'https://pokeapi.co/api/v2/pokemon/34/'
     },
     {
-      'name': 'clefairy',
+      id: 14,
+      name: 'clefairy',
       'url': 'https://pokeapi.co/api/v2/pokemon/35/'
     },
     {
-      'name': 'clefable',
+      id: 15,
+      name: 'clefable',
       'url': 'https://pokeapi.co/api/v2/pokemon/36/'
     },
     {
-      'name': 'vulpix',
+      id: 16,
+      name: 'vulpix',
       'url': 'https://pokeapi.co/api/v2/pokemon/37/'
     },
     {
-      'name': 'ninetales',
+      id: 17,
+      name: 'ninetales',
       'url': 'https://pokeapi.co/api/v2/pokemon/38/'
     },
     {
-      'name': 'jigglypuff',
+      id: 18,
+      name: 'jigglypuff',
       'url': 'https://pokeapi.co/api/v2/pokemon/39/'
     },
     {
-      'name': 'wigglytuff',
+      id: 19,
+      name: 'wigglytuff',
       'url': 'https://pokeapi.co/api/v2/pokemon/40/'
     }
   ]

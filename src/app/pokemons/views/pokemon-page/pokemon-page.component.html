@@ -1,14 +1,20 @@
+<button (click)="toggleDetail()">cick</button>
+
 <div class="grid pokemon-page">
 
-  <div class="col">
+  <div class="col-12 md:col-6 p-fluid">
     <p-autoComplete
       [formControl]="searchFC"
       [suggestions]="suggestions"
-      class="mb-1"
     ></p-autoComplete>
+  </div>
+
+  <div class="col-12 md:col-9">
     <p-table
-      [value]="pokemons"
-      selectionMode="single"
+      [value]="pokemonsI"
+      selectionMode="multiple"
+      [rowHover]="true"
+      dataKey="id"
       [(selection)]="selected"
       [rows]="pagination.rows"
       [first]="pagination.first"
@@ -38,12 +44,59 @@
     </p-table>
   </div>
 
-  <div class="col-3">
-    <div class="bg-red-500"
-         *ngIf="selected"
-    >
-      <h1>Hello</h1>
+  <div class="col-12 md:col-3" *ngIf="selected || true">
+    <div class="p-card">
+      <h1 class="text-center m-0">VENASAUR </h1>
+      <div class="text-center">Seed Pokemon</div>
+
+      <div class="grid mt-3">
+        <div class="col-6 text-right">
+          <label>ID</label>
+        </div>
+        <div class="col-6">
+          <label>#3</label>
+        </div>
+
+        <div class="col-6 text-right">
+          <label>Height</label>
+        </div>
+        <div class="col-6">
+          <label>2.0m</label>
+        </div>
+
+        <div class="col-6 text-right">
+          <label>Weight</label>
+        </div>
+        <div class="col-6">
+          <label>100.0 Kg</label>
+        </div>
+
+        <div class="col-6 text-right">
+          <label>Abilities</label>
+        </div>
+        <div class="col-6">
+          <label>OVERGROW</label>
+          <label>CHLOROPHYLL</label>
+        </div>
+
+        <div class="col-6 text-right">
+          <label>Type</label>
+        </div>
+        <div class="col-6">
+          <label>Grass</label>
+          <label>Poison</label>
+        </div>
+
+        <div class="col-6 text-right">
+          <label>Forms</label>
+        </div>
+        <div class="col-6">
+          <label>Venusaur</label>
+          <label>Mega Venusaur</label>
+        </div>
+
+      </div>
     </div>
   </div>
-  <button (click)="toggleDetail()">cick</button>
+
 </div>

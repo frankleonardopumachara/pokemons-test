@@ -1,22 +1,60 @@
-import { Component, inject, OnInit } from '@angular/core'
-import { FormControl } from '@angular/forms'
-import { PokemonPagePresenter } from './pokemon-page.presenter'
-import { ColumnConfig, PaginationConfig } from '../../../my-ui/table/domain/symbols'
-import { PokemonDetail, PokemonItem } from '../../domain/symbols'
+import {Component, inject} from '@angular/core'
+import {PokemonPagePresenter} from './pokemon-page.presenter'
+import {ColumnConfig} from '../../../my-ui/table/domain/symbols'
+import {PokemonDetail, PokemonItem} from '../../domain/symbols'
 
 @Component({
   selector: 'app-pokemon-page',
-  templateUrl: './pokemon-page.component.html',
+  template: `
+    <div class="mt-7 mx-1 md:mx-7">
+
+      <div class="grid grid-cols-12">
+        <div class="col-span-12 md:col-span-6">
+          <my-auto-complete
+            *ngIf="presenter.suggestions$ | async as suggestions"
+            [suggestions]="suggestions"
+            (onRequestSuggestions)="getSuggestions($event)"
+            (onSearch)="search($event)"
+          ></my-auto-complete>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-2 mt-7 items-stretch">
+        <div class="col-span-1 md:col-span-7 h-full">
+          <my-table
+            *ngIf="presenter.pokemonsPage$ | async as page"
+            [columns]="tableColumns"
+            [items]="page.results"
+            (onSelectedChange)="onSelectItem($event)"
+          ></my-table>
+          <div class="mt-1 flex justify-end">
+            <my-paginator
+              *ngIf="presenter.paginationConfig$ | async as config"
+              [config]="config"
+              (onCurrentPageChange)="onPageChange($event)"
+            >
+            </my-paginator>
+          </div>
+        </div>
+
+        <div class="col-span-1 md:col-span-5 h-full"
+             *ngIf="presenter.selectedPokemon$ | async as selectedPokemon">
+          <app-pokemon-detail
+            [pokemon]="selectedPokemon"
+          >
+          </app-pokemon-detail>
+        </div>
+      </div>
+    </div>
+  `,
   styleUrls: ['./pokemon-page.component.scss'],
   providers: [PokemonPagePresenter],
 })
-export class PokemonPageComponent implements OnInit {
+export class PokemonPageComponent {
 
   presenter = inject(PokemonPagePresenter)
 
-  searchFC = new FormControl('')
-
-  tableColumns: ColumnConfig[] = [
+  tableColumns: ColumnConfig<PokemonItem>[] = [
     {
       title: 'Name',
       dataProperty: 'name'
@@ -28,79 +66,13 @@ export class PokemonPageComponent implements OnInit {
   ]
 
   suggestions = ['Frank', 'Leonardo']
-  pokemonsI: any[] = [
-    {
-      id: 1,
-      name: 'fearow',
-      url: 'https://pokeapi.co/api/v2/pokemon/22/'
-    },
-    {
-      id: 2,
-      name: 'ekans',
-      'url': 'https://pokeapi.co/api/v2/pokemon/23/'
-    },
-    {
-      id: 3,
-      name: 'arbok',
-      'url': 'https://pokeapi.co/api/v2/pokemon/24/'
-    },
-    {
-      id: 4,
-      name: 'pikachu',
-      'url': 'https://pokeapi.co/api/v2/pokemon/25/'
-    },
-    {
-      id: 5,
-      name: 'raichu',
-      'url': 'https://pokeapi.co/api/v2/pokemon/26/'
-    },
-    {
-      id: 6,
-      name: 'sandshrew',
-      'url': 'https://pokeapi.co/api/v2/pokemon/27/'
-    },
-    {
-      id: 7,
-      name: 'sandslash',
-      'url': 'https://pokeapi.co/api/v2/pokemon/28/'
-    },
-    {
-      id: 8,
-      name: 'nidoran-f',
-      'url': 'https://pokeapi.co/api/v2/pokemon/29/'
-    },
-    {
-      id: 9,
-      name: 'nidorina',
-      'url': 'https://pokeapi.co/api/v2/pokemon/30/'
-    },
-    {
-      id: 10,
-      name: 'nidoqueen',
-      'url': 'https://pokeapi.co/api/v2/pokemon/31/'
-    },
-  ]
-  pokemons = []
-  selected = false
 
   selectedPokemon: PokemonDetail | null = null
 
-  pagination: PaginationConfig = {
-    totalRecords: 90,
-    pageSize: 10
-  }
-
   selectedItem: PokemonItem | null = null
 
-  ngOnInit(): void {
-  }
-
   onPageChange(currentPage: number) {
-    console.log(currentPage)
-  }
-
-  toggleDetail() {
-    this.selected = !this.selected
+    this.presenter.setPage(currentPage)
   }
 
   getSuggestions(query: string) {
@@ -112,6 +84,7 @@ export class PokemonPageComponent implements OnInit {
     console.log('buscar', query)
   }
 
-  onSelectItem(item: Record<string, any>) {
+  onSelectItem(item: PokemonItem): void {
+    this.presenter.getPokemonDetail(item.name)
   }
 }

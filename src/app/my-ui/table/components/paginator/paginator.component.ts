@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { PaginationConfig } from '../../domain/symbols'
+import {Component, EventEmitter, Input, Output} from '@angular/core'
+import {PaginationConfig} from '../../domain/symbols'
 
 @Component({
   selector: 'my-paginator',
@@ -7,9 +7,10 @@ import { PaginationConfig } from '../../domain/symbols'
     <nav aria-label="Page navigation example">
       <ul class="inline-flex items-center -space-x-px">
 
-        <li *ngIf="hasPrevious">
+        <li>
           <span
-             class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+            class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+            (click)="nextOrPrevious(-1)"
           >
             <span class="sr-only">Previous</span>
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -23,20 +24,29 @@ import { PaginationConfig } from '../../domain/symbols'
           </span>
         </li>
 
-        <li *ngFor="let page of pages">
+        <li *ngFor="let pageUI of pagesUI">
           <span
-             class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
-             [ngClass]="{
-                'bg-blue-50': currentPage === page
-             }"
-             (click)="changePage(page)"
-          >{{ page }}
+            *ngIf="pageUI"
+            class="px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+            [ngClass]="{
+               'bg-blue-50': currentPage === pageUI,
+               'bg-white': currentPage !== pageUI,
+            }"
+            (click)="changePage(pageUI!)"
+          >{{ pageUI | json }}
+          </span>
+
+          <span
+            *ngIf="pageUI === null"
+            class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300"
+          >...
           </span>
         </li>
 
-        <li *ngIf="true">
+        <li>
           <span
-             class="block px-3 py-2 leading-tight bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+            class="block px-3 py-2 leading-tight bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+            (click)="nextOrPrevious(1)"
           >
             <span class="sr-only">Next</span>
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -63,6 +73,7 @@ export class PaginatorComponent {
   hasPrevious = false
   currentPage = 1
   hasNext = false
+  pagesUI: (number | null)[] = []
 
   @Input()
   set config(value: PaginationConfig) {
@@ -72,6 +83,7 @@ export class PaginatorComponent {
     this.pages = Array.from(Array(this.pagesCount).keys()).map((page) => page + 1)
     this.hasPrevious = this.currentPage === 1
     this.hasNext = this.currentPage === this.pagesCount
+    this.createPages()
   }
 
   @Output() onCurrentPageChange = new EventEmitter<number>()
@@ -79,5 +91,42 @@ export class PaginatorComponent {
   changePage(page: number) {
     this.currentPage = page
     this.onCurrentPageChange.emit(page)
+    this.createPages()
+  }
+
+  // r1 -- r --  -- r -- r2
+  // 8     9   10   11   12
+  createPages(): void {
+    this.pagesUI = [1]
+    if (this.currentPage === 1 && this.pages.length === 1) {
+      return
+    }
+
+    if (this.currentPage > 4) {
+      this.pagesUI.push(null)
+    }
+
+    let r = 2
+    let r1 = this.currentPage - r
+    let r2 = this.currentPage + r
+
+    let index = r1 > 2 ? r1 : 2
+    for (let i = index; i <= Math.min(this.pages.length, r2); i++) {
+      this.pagesUI.push(i)
+    }
+
+    if (r2 + 1 < this.pages.length) {
+      this.pagesUI.push(null)
+    }
+    if (r2 < this.pages.length) {
+      this.pagesUI.push(this.pages.length)
+    }
+  }
+
+  nextOrPrevious(offset: number) {
+    const newPage = this.currentPage + offset
+    if (1 <= newPage && newPage <= this.pages.length) {
+      this.changePage(newPage)
+    }
   }
 }

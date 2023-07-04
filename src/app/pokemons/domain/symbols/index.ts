@@ -47,6 +47,6 @@ export interface PokemonDetail {
   weight: number
   height: number
   abilities: UIAbility[]
-  type: UIType[]
+  types: UIType[]
   forms: Form[]
 }

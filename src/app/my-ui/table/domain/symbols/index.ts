@@ -1,6 +1,6 @@
-export interface ColumnConfig {
+export interface ColumnConfig<T> {
   title: string
-  dataProperty: string
+  dataProperty: keyof T
 }
 
 export interface PaginationConfig {

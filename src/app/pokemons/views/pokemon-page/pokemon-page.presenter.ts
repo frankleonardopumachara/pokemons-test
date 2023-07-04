@@ -1,7 +1,9 @@
-import { inject, Injectable } from '@angular/core'
-import { PokemonHttp } from '../../http/pokemon.http'
-import { PokemonDetail } from '../../domain/symbols'
-import { BehaviorSubject, filter, switchMap } from 'rxjs'
+import {inject, Injectable} from '@angular/core'
+import {PokemonHttp} from '../../http/pokemon.http'
+import {BehaviorSubject, map, Observable, shareReplay, switchMap, tap} from 'rxjs'
+import {isNotNull} from "../../utils";
+import {IPage, Pagination, PokemonDetail, PokemonItem} from "../../domain/symbols";
+import {PaginationConfig} from "../../../my-ui/table/domain/symbols";
 
 @Injectable()
 export class PokemonPagePresenter {
@@ -9,62 +11,55 @@ export class PokemonPagePresenter {
   private pokemonHttp = inject(PokemonHttp)
 
   private selectedPokemonName = new BehaviorSubject<string | null>(null)
-  public selectedPokemon$ = this.selectedPokemonName
+  public selectedPokemon$: Observable<PokemonDetail> = this.selectedPokemonName
+    .asObservable()
     .pipe(
-      filter((name) => name !== null),
+      isNotNull(),
       switchMap((name) => this.pokemonHttp.getPokemonDetail(name))
     )
-  // private suggestions = new BehaviorSubject<string[]>([])
-  // public suggestions$ = this.suggestions.asObservable()
-  //
-  // private pagination = new BehaviorSubject<Pagination>({
-  //   limit: 10,
-  //   offset: 0
-  // })
-  //
-  // public pagination$ = this.pagination.asObservable()
-  //
-  // public pokemonsPage$: Observable<Page<PokemonRow>> = this.pagination$
-  //   .pipe(
-  //     switchMap((pagination) => {
-  //       return this.getPokemonPage(pagination)
-  //     })
-  //   )
-  //
-  // private getPokemonPage(pagination: Pagination): Observable<Page<PokemonRow>> {
-  //   return this.pokemonHttp.getPokemonPage(pagination).pipe(
-  //     map((page) => {
-  //       const results = page.results.map(pokemon => new PokemonRow(pokemon))
-  //
-  //       const pokemonPage = new Page<PokemonRow>({
-  //         results: results,
-  //         count: page.count,
-  //         next: page.next,
-  //         previous: page.previous
-  //       })
-  //
-  //       return pokemonPage
-  //     }),
-  //     catchError((err) => {
-  //       console.log(err)
-  //       const error = new Error('Algo paso!')
-  //       return throwError(() => error)
-  //     })
-  //   )
-  // }
-  //
-  // public filterPokemos(query: string): void {
-  //   const suggestions = this.suggestions
-  //     .value
-  //     .filter((name) => name.includes(query))
-  //
-  //   this.suggestions.next([])
-  // }
+
+  private _pagination = new BehaviorSubject<Pagination>({
+    offset: 1,
+    limit: 10
+  })
+  public pagination$ = this._pagination.asObservable()
+
+  public pokemonsPage$: Observable<IPage<PokemonItem>> = this.pagination$
+    .pipe(
+      switchMap((pagination) => this.pokemonHttp.getPokemonPage(pagination)),
+      shareReplay(1),
+    )
+
+  public paginationConfig$: Observable<PaginationConfig> = this.pokemonsPage$
+    .pipe(
+      map((pagination) => ({
+        pageSize: 10,
+        totalRecords: pagination.count
+      }))
+    )
+
+  private query = new BehaviorSubject<string>("")
+  public suggestions$ = this.pokemonsPage$
+    .pipe(
+      map((page) => {
+        return page.results.map((item) => item.name)
+      })
+    )
 
   getPokemonDetail(name: string) {
-    this.pokemonHttp.getPokemonDetail(name)
-      .pipe(
-        sw
-      )
+    this.selectedPokemonName.next(name)
+  }
+
+  setPage(newPage: number) {
+    const limit = 10
+    const offset = newPage * limit - limit + 1
+    this._pagination.next({
+      offset,
+      limit
+    })
+  }
+
+  getSuggestions(query: string) {
+    this.pokemonsPage$.subscribe()
   }
 }

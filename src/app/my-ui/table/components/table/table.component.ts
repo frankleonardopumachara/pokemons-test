@@ -36,21 +36,21 @@ import { ColumnConfig } from '../../domain/symbols'
   `,
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent {
-  @Input() columns: ColumnConfig[] = []
-  @Input() items: Record<string, any>[] = []
+export class TableComponent<T> {
+  @Input() columns: ColumnConfig<T>[] = []
+  @Input() items: T[] = []
 
   @Input()
-  set selected(item: Record<string, any>) {
+  set selected(item: T | null) {
     this._selected = item
   }
 
-  @Output() onSelectedChange = new EventEmitter<Record<string, any>>()
+  @Output() onSelectedChange = new EventEmitter<T>()
 
-  _selected: Record<string, any> | null = null
+  _selected: T | null = null
 
-  selectRow(item: Record<string, any>) {
+  selectRow(item: T) {
     this._selected = item
-    this.onSelectedChange.emit(this.selected)
+    this.onSelectedChange.emit(item)
   }
 }

@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core'
-import { TableComponent } from './components/table/table.component'
-import { PaginatorComponent } from './components/paginator/paginator.component'
-import { NgClass, NgForOf, NgIf } from '@angular/common'
+import {NgModule} from '@angular/core'
+import {TableComponent} from './components/table/table.component'
+import {PaginatorComponent} from './components/paginator/paginator.component'
+import {JsonPipe, NgClass, NgForOf, NgIf} from '@angular/common'
 
 @NgModule({
   declarations: [
@@ -11,7 +11,8 @@ import { NgClass, NgForOf, NgIf } from '@angular/common'
   imports: [
     NgForOf,
     NgClass,
-    NgIf
+    NgIf,
+    JsonPipe
   ],
   exports: [
     TableComponent,

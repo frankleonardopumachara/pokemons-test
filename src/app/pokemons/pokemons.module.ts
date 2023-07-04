@@ -1,35 +1,27 @@
 import { NgModule } from '@angular/core'
 import { PokemonPageComponent } from './views/pokemon-page/pokemon-page.component'
-import { TableModule } from 'primeng/table'
-import { AutoCompleteModule } from 'primeng/autocomplete'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
-import { StyleClassModule } from 'primeng/styleclass'
 import { CommonModule } from '@angular/common'
 import { PokemonsRoutingModule } from './pokemons.routing.module'
-import { ButtonModule } from 'primeng/button'
-import { PaginatorModule } from 'primeng/paginator'
-import { DividerModule } from 'primeng/divider'
-import {DialogModule} from "primeng/dialog";
+import { TableModule } from '../my-ui/table/table.module'
+import { AutocompleteModule } from '../my-ui/autocomplete/autocomplete.module'
+import { PokemonDetailComponent } from './components/pokemon-detailc/pokemon-detail.component'
 
 @NgModule({
   declarations: [
     PokemonPageComponent,
+    PokemonDetailComponent,
   ],
-    imports: [
-        CommonModule,
-        TableModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AutoCompleteModule,
-        HttpClientModule,
-        StyleClassModule,
-        PokemonsRoutingModule,
-        ButtonModule,
-        PaginatorModule,
-        DividerModule,
-        DialogModule,
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    PokemonsRoutingModule,
+    TableModule,
+    AutocompleteModule,
+  ],
 })
 export class PokemonsModule {
 }

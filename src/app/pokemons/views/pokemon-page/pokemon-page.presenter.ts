@@ -1,10 +1,19 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
+import { PokemonHttp } from '../../http/pokemon.http'
+import { PokemonDetail } from '../../domain/symbols'
+import { BehaviorSubject, filter, switchMap } from 'rxjs'
 
 @Injectable()
 export class PokemonPagePresenter {
 
-  // private pokemonHttp = inject(PokemonHttp)
-  //
+  private pokemonHttp = inject(PokemonHttp)
+
+  private selectedPokemonName = new BehaviorSubject<string | null>(null)
+  public selectedPokemon$ = this.selectedPokemonName
+    .pipe(
+      filter((name) => name !== null),
+      switchMap((name) => this.pokemonHttp.getPokemonDetail(name))
+    )
   // private suggestions = new BehaviorSubject<string[]>([])
   // public suggestions$ = this.suggestions.asObservable()
   //
@@ -51,4 +60,11 @@ export class PokemonPagePresenter {
   //
   //   this.suggestions.next([])
   // }
+
+  getPokemonDetail(name: string) {
+    this.pokemonHttp.getPokemonDetail(name)
+      .pipe(
+        sw
+      )
+  }
 }

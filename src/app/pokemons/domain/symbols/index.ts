@@ -21,13 +21,32 @@ export interface UIAbility {
   ability: Ability
 }
 
+export interface Type {
+  name: string
+  url: string
+}
+
+export interface UIType {
+  slot: number
+  type: Type
+}
+
 export interface PokemonItem {
   name: string
   url: string
 }
 
+export interface Form {
+  name: string
+  url: string
+}
+
 export interface PokemonDetail {
+  id: number
   name: string
   weight: number
-  uiAbilities: UIAbility[]
+  height: number
+  abilities: UIAbility[]
+  type: UIType[]
+  forms: Form[]
 }

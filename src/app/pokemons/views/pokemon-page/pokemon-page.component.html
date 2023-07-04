@@ -1,102 +1,39 @@
-<button (click)="toggleDetail()">cick</button>
+<div class="mt-7 mx-1 md:mx-7">
 
-<div class="grid pokemon-page">
-
-  <div class="col-12 md:col-6 p-fluid">
-    <p-autoComplete
-      [formControl]="searchFC"
-      [suggestions]="suggestions"
-    ></p-autoComplete>
-  </div>
-
-  <div class="col-12 md:col-9">
-    <p-table
-      [value]="pokemonsI"
-      selectionMode="multiple"
-      [rowHover]="true"
-      dataKey="id"
-      [(selection)]="selected"
-      [rows]="pagination.rows"
-      [first]="pagination.first"
-      [totalRecords]="pagination.totalRecords"
-      [paginator]="true"
-      [rowsPerPageOptions]="pagination.rowsPerPageOptions"
-      [responsive]="true"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Name</th>
-          <th>Image</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-pokemon>
-        <tr>
-          <td>{{ pokemon.name }}</td>
-          <td>
-            <p-button
-              [label]="pokemon.url"
-              styleClass="p-button-link"
-            >
-            </p-button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-
-  <div class="col-12 md:col-3" *ngIf="selected || true">
-    <div class="p-card">
-      <h1 class="text-center m-0">VENASAUR </h1>
-      <div class="text-center">Seed Pokemon</div>
-
-      <div class="grid mt-3">
-        <div class="col-6 text-right">
-          <label>ID</label>
-        </div>
-        <div class="col-6">
-          <label>#3</label>
-        </div>
-
-        <div class="col-6 text-right">
-          <label>Height</label>
-        </div>
-        <div class="col-6">
-          <label>2.0m</label>
-        </div>
-
-        <div class="col-6 text-right">
-          <label>Weight</label>
-        </div>
-        <div class="col-6">
-          <label>100.0 Kg</label>
-        </div>
-
-        <div class="col-6 text-right">
-          <label>Abilities</label>
-        </div>
-        <div class="col-6">
-          <label>OVERGROW</label>
-          <label>CHLOROPHYLL</label>
-        </div>
-
-        <div class="col-6 text-right">
-          <label>Type</label>
-        </div>
-        <div class="col-6">
-          <label>Grass</label>
-          <label>Poison</label>
-        </div>
-
-        <div class="col-6 text-right">
-          <label>Forms</label>
-        </div>
-        <div class="col-6">
-          <label>Venusaur</label>
-          <label>Mega Venusaur</label>
-        </div>
-
-      </div>
+  <div class="grid grid-cols-12">
+    <div class="col-span-12 md:col-span-6">
+      <my-auto-complete
+        [suggestions]="suggestions"
+        (onRequestSuggestions)="getSuggestions($event)"
+        (onSearch)="search($event)"
+      ></my-auto-complete>
     </div>
   </div>
 
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-2 mt-7">
+    <div class="col-span-1 md:col-span-7">
+      <my-table
+        [columns]="tableColumns"
+        [items]="pokemonsI"
+        (onSelectedChange)="onSelectItem($event)"
+      ></my-table>
+      <div class="mt-1 flex justify-end">
+        <my-paginator
+          [config]="pagination"
+          (onCurrentPageChange)="onPageChange($event)"
+        >
+        </my-paginator>
+      </div>
+    </div>
+
+    <div class="col-span-1 md:col-span-5" *ngIf="presenter.selectedPokemon$ | async as selectedPokemon">
+      <app-pokemon-detail
+        [pokemon]="selectedPokemon"
+      >
+      </app-pokemon-detail>
+    </div>
+
+  </div>
+
 </div>
+
